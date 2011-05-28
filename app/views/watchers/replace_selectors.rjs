@@ -3,7 +3,7 @@
 
   case selector
   when '#watchers'
-    page.replace_html 'watchers', :partial => 'watchers/watchers', :locals => {:watched => @watched}
+    page.replace_html 'watchers', :partial => 'watchers/watchers', :locals => {:watched => @watched, :render_watcher_dropdown => @render_watcher_dropdown}
   else
     page.select(selector).each do |node|
       options = {:replace => @replace_selectors}
@@ -15,7 +15,7 @@
         options[:id] = last_selector[1..-1]
       end
 
-      node.replace watcher_link(@watched, @user, options)
+      node.replace watcher_link(@watched, User.current, options)
     end
   end
 end

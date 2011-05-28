@@ -64,7 +64,8 @@ module WatchersHelper
                :action => 'destroy',
                :object_type => object.class.to_s.underscore,
                :object_id => object.id,
-               :user_id => user}
+               :user_id => user,
+               :replace => ['#watchers', '.watcher_link']}
         s += ' ' + link_to_remote(image_tag('delete.png'),
                                   {:url => url},
                                   :href => url_for(url),

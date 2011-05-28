@@ -18,10 +18,10 @@
 class WatchersController < ApplicationController
   before_filter :find_project
   before_filter :require_login, :check_project_privacy, :only => [:watch, :unwatch]
-  before_filter :authorize, :only => [:new, :destroy]
+  before_filter :authorize, :only => [:new, :destroy, :create]
   
   verify :method => :post,
-         :only => [ :watch, :unwatch ],
+         :only => [ :watch, :unwatch, :create, :destroy ],
          :render => { :nothing => true, :status => :method_not_allowed }
   
   def watch
@@ -37,31 +37,23 @@ class WatchersController < ApplicationController
   end
   
   def new
-    @watcher = Watcher.new(params[:watcher])
-    @watcher.watchable = @watched
-    @watcher.save if request.post?
     respond_to do |format|
       format.html { redirect_to :back }
       format.js do
         render :update do |page|
-          page.replace_html 'watchers', :partial => 'watchers/watchers', :locals => {:watched => @watched}
+          page.replace_html 'watchers', :partial => 'watchers/watchers', :locals => {:watched => @watched, :render_watcher_dropdown => true}
         end
       end
     end
-  rescue ::ActionController::RedirectBackError
-    render :text => 'Watcher added.', :layout => true
+  end
+  
+  def create
+    @render_watcher_dropdown = true
+    set_watcher(User.find(params[:watcher][:user_id]), true)
   end
   
   def destroy
-    @watched.set_watcher(User.find(params[:user_id]), false) if request.post?
-    respond_to do |format|
-      format.html { redirect_to :back }
-      format.js do
-        render :update do |page|
-          page.replace_html 'watchers', :partial => 'watchers/watchers', :locals => {:watched => @watched}
-        end
-      end
-    end
+    set_watcher(User.find(params[:user_id]), false)
   end
   
 private
