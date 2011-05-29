@@ -32,11 +32,11 @@ class WatchersControllerTest < ActionController::TestCase
     User.current = nil
   end
   
-  def test_get_watch_should_be_invalid
-    @request.session[:user_id] = 3
-    get :watch, :object_type => 'issue', :object_id => '1'
-    assert_response 405
-  end
+  #def test_get_watch_should_be_invalid
+  #  @request.session[:user_id] = 3
+  #  get :watch, :object_type => 'issue', :object_id => '1'
+  #  assert_response 405
+  #end
   
   def test_watch
     @request.session[:user_id] = 3
@@ -118,9 +118,11 @@ class WatchersControllerTest < ActionController::TestCase
   def test_new_watcher
     @request.session[:user_id] = 2
     assert_difference('Watcher.count') do
-      xhr :post, :new, :object_type => 'issue', :object_id => '2', :watcher => {:user_id => '4'}
+      xhr :post, :create, :object_type => 'issue', :object_id => '2', :watcher => {:user_id => '4'}, :replace => ['#watchers', '.watcher']
       assert_response :success
       assert_select_rjs :replace_html, 'watchers'
+      assert @response.body.include? "$$(\".watcher\").each"
+      assert @response.body.include? "value.replace"
     end
     assert Issue.find(2).watched_by?(User.find(4))
   end
@@ -128,9 +130,11 @@ class WatchersControllerTest < ActionController::TestCase
   def test_remove_watcher
     @request.session[:user_id] = 2
     assert_difference('Watcher.count', -1) do
-      xhr :post, :destroy, :object_type => 'issue', :object_id => '2', :user_id => '3'
+      xhr :delete, :destroy, :id => '1', :replace => ['#watchers', '.watcher']
       assert_response :success
       assert_select_rjs :replace_html, 'watchers'
+      assert @response.body.include? "$$(\".watcher\").each"
+      assert @response.body.include? "value.replace"
     end
     assert !Issue.find(2).watched_by?(User.find(3))
   end
