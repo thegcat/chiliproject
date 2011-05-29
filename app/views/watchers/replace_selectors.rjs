@@ -1,12 +1,12 @@
-@replace_selectors.each do |selector|
+@options[:replace_selectors].each do |selector|
   next if selector.blank?
 
   case selector
   when '#watchers'
-    page.replace_html 'watchers', :partial => 'watchers/watchers', :locals => {:watched => @watched, :render_watcher_dropdown => @render_watcher_dropdown}
+    page.replace_html 'watchers', :partial => 'watchers/watchers', :locals => {:watched => @watched, :render_watcher_dropdown => @options[:render_watcher_dropdown]}
   else
     page.select(selector).each do |node|
-      options = {:replace => @replace_selectors}
+      options = {:replace => @options[:replace_selectors]}
 
       last_selector = selector.split(' ').last
       if last_selector.starts_with? '.'

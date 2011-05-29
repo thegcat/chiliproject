@@ -48,8 +48,7 @@ class WatchersController < ApplicationController
   end
   
   def create
-    @render_watcher_dropdown = true
-    set_watcher(User.find(params[:watcher][:user_id]), true)
+    set_watcher(User.find(params[:watcher][:user_id]), true, :render_watcher_dropdown => true)
   end
   
   def destroy
@@ -66,22 +65,26 @@ private
     render_404
   end
   
-  def set_watcher(user, watching)
+  def set_watcher(user, watching, options={})
     @watched.set_watcher(user, watching)
+    render_with_replace_selectors(options)
+  end
 
+  def render_with_replace_selectors(options={})
     respond_to do |format|
       format.html { redirect_to :back }
       format.js do
-        if params[:replace].present?
+        options[:replace_selectors] = if params[:replace].present?
           if params[:replace].is_a? Array
-            @replace_selectors = params[:replace]
+            params[:replace]
           else
-            @replace_selectors = params[:replace].split(',').map(&:strip)
+            params[:replace].split(',').map(&:strip)
           end
         else
-          @replace_selectors = ['#watcher']
+          ['#watcher']
         end
-        @user = user
+        
+        @options = options
 
         render :action => 'replace_selectors'
       end

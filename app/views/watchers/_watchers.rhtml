@@ -8,7 +8,7 @@
 
 <h3><%= l(:label_issue_watchers) %> (<%= watched.watcher_users.size %>)</h3>
 
-<% if (render_watcher_dropdown ||= false) && !watched.addable_watcher_users.empty? %>
+<% if (render_watcher_dropdown if defined?(render_watcher_dropdown)) && !watched.addable_watcher_users.empty? %>
 	<% remote_form_for(:watcher, @watcher, 
                 	   :url => {:controller => 'watchers',
               	              :action => 'create',
