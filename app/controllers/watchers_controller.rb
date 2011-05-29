@@ -20,10 +20,6 @@ class WatchersController < ApplicationController
   before_filter :require_login, :check_project_privacy, :only => [:watch, :unwatch]
   before_filter :authorize, :only => [:new, :destroy, :create]
   
-  verify :method => :post,
-         :only => [ :watch, :unwatch, :create, :destroy ],
-         :render => { :nothing => true, :status => :method_not_allowed }
-  
   def watch
     if @watched.respond_to?(:visible?) && !@watched.visible?(User.current)
       render_403
@@ -52,15 +48,24 @@ class WatchersController < ApplicationController
   end
   
   def destroy
-    set_watcher(User.find(params[:user_id]), false)
+    @watcher.destroy
+    render_with_replace_selectors
+  rescue ::ActionController::RedirectBackError
+    render :text => 'Watcher removed.', :layout => true
   end
   
 private
   def find_project
-    klass = Object.const_get(params[:object_type].camelcase)
-    return false unless klass.respond_to?('watched_by')
-    @watched = klass.find(params[:object_id])
-    @project = @watched.project
+    if params[:id].present?
+      @watcher = Watcher.find(params[:id], :include => {:watchable => :project})
+      @watched = @watcher.watchable
+      @project = @watched.project
+    else
+      klass = Object.const_get(params[:object_type].camelcase)
+      return false unless klass.respond_to?('watched_by')
+      @watched = klass.find(params[:object_id])
+      @project = @watched.project
+    end
   rescue
     render_404
   end
@@ -68,6 +73,8 @@ private
   def set_watcher(user, watching, options={})
     @watched.set_watcher(user, watching)
     render_with_replace_selectors(options)
+  rescue ::ActionController::RedirectBackError
+    render :text => (watching ? 'Watcher added.' : 'Watcher removed.'), :layout => true
   end
 
   def render_with_replace_selectors(options={})
@@ -89,7 +96,5 @@ private
         render :action => 'replace_selectors'
       end
     end
-  rescue ::ActionController::RedirectBackError
-    render :text => (watching ? 'Watcher added.' : 'Watcher removed.'), :layout => true
   end
 end
