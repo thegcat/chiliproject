@@ -92,15 +92,16 @@ end
 
 ActionMailer::Base.send :include, AsynchronousMailer
 
-# TMail::Unquoter.convert_to_with_fallback_on_iso_8859_1 introduced in TMail 1.2.7
-# triggers a test failure in test_add_issue_with_japanese_keywords(MailHandlerTest)
-module TMail
-  class Unquoter
-    class << self
-      alias_method :convert_to, :convert_to_without_fallback_on_iso_8859_1
-    end
-  end
-end
+# TODO rails-3.1: doesn't work on rails 3.1, still needed?
+## TMail::Unquoter.convert_to_with_fallback_on_iso_8859_1 introduced in TMail 1.2.7
+## triggers a test failure in test_add_issue_with_japanese_keywords(MailHandlerTest)
+#module TMail
+#  class Unquoter
+#    class << self
+#      alias_method :convert_to, :convert_to_without_fallback_on_iso_8859_1
+#    end
+#  end
+#end
 
 module ActionController
   module MimeResponds
