@@ -1,9 +1,18 @@
 source :rubygems
 
-gem "rails", "2.3.14"
+gem 'rails', '~> 3.1.0'
+gem 'json'
+gem 'prototype-rails', :git => "https://github.com/rubychan/prototype-rails.git"
+
+# Gems used only for assets and not required
+# in production environments by default.
+group :assets do
+  gem 'sass-rails', "  ~> 3.1.0"
+  gem 'coffee-rails', "~> 3.1.0"
+  gem 'uglifier'
+end
 
 gem "coderay", "~> 0.9.7"
-gem "i18n", "~> 0.4.2"
 gem "rubytree", "~> 0.5.2", :require => 'tree'
 gem "rdoc", ">= 2.4.2"
 # Needed only on RUBY_VERSION = 1.8, ruby 1.9+ compatible interpreters should bring their csv
@@ -28,28 +37,17 @@ group :rmagick do
   gem "rmagick", "~> 1.15.17"
 end
 
-# Use the commented pure ruby gems, if you have not the needed prerequisites on
-# board to compile the native ones.  Note, that their use is discouraged, since
-# their integration is propbably not that well tested and their are slower in
-# orders of magnitude compared to their native counterparts. You have been
-# warned.
-
 platforms :mri do
   group :mysql do
-    gem "mysql"
-    #   gem "ruby-mysql"
-  end
-
-  group :mysql2 do
-    gem "mysql2", "~> 0.2.7"
+    gem "mysql2"
   end
 
   group :postgres do
-    gem "pg", "~> 0.9.0"
-    #   gem "postgres-pr"
+    gem "pg"
   end
 end
 
+# TODO rails-3.1: any reason to keep sqlite3-ruby on <1.9?
 platforms :mri_18 do
   group :sqlite do
     gem "sqlite3-ruby", "< 1.3", :require => "sqlite3"
