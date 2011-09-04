@@ -10,6 +10,8 @@ gem "acts-as-taggable-on", "= 2.1.0"
 gem 'gravatarify', '~> 3.0.0'
 # TODO rails-3.2: review the core changes to awesome_nested_set and decide on actions
 gem 'awesome_nested_set'
+# TODO rails-3.2: review the core changes to open_id_authentication and decide on actions
+gem 'open_id_authentication'
 
 # Gems used only for assets and not required
 # in production environments by default.
