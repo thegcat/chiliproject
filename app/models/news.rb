@@ -26,10 +26,7 @@ class News < ActiveRecord::Base
 
   after_create :add_author_as_watcher
 
-  named_scope :visible, lambda {|*args| {
-    :include => :project,
-    :conditions => Project.allowed_to_condition(args.first || User.current, :view_news)
-  }}
+  scope :visible, lambda {|*args| joins(:project).where(Project.allowed_to_condition(args.first || User.current, :view_news))}
 
   def visible?(user=User.current)
     !user.nil? && user.allowed_to?(:view_news, project)

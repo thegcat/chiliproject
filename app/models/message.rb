@@ -44,8 +44,7 @@ class Message < ActiveRecord::Base
 
   after_create :add_author_as_watcher
 
-  named_scope :visible, lambda {|*args| { :include => {:board => :project},
-                                          :conditions => Project.allowed_to_condition(args.first || User.current, :view_messages) } }
+  scope :visible, lambda {|*args| joins({:board => :project}).where(Project.allowed_to_condition(args.first || User.current, :view_messages))}
 
   def visible?(user=User.current)
     !user.nil? && user.allowed_to?(:view_messages, project)
