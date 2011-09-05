@@ -895,13 +895,15 @@ module ApplicationHelper
   def javascript_heads
     tags = javascript_include_tag(:defaults)
     unless User.current.pref.warn_on_leaving_unsaved == '0'
-      tags << "\n" + javascript_tag("Event.observe(window, 'load', function(){ new WarnLeavingUnsaved('#{escape_javascript( l(:text_warn_on_leaving_unsaved) )}'); });")
+      # TODO rails-3.1: Make nicer!
+      tags << "\n".html_safe + javascript_tag("Event.observe(window, 'load', function(){ new WarnLeavingUnsaved('#{escape_javascript( l(:text_warn_on_leaving_unsaved) )}'); });")
     end
     tags
   end
 
   def favicon
-    "<link rel='shortcut icon' href='#{image_path('/favicon.ico')}' />"
+    # TODO rails-3.1: Make nicer!
+    "<link rel='shortcut icon' href='#{image_path('/favicon.ico')}' />".html_safe
   end
 
   # Add a HTML meta tag to control robots (web spiders)

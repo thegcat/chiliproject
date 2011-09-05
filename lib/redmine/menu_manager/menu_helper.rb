@@ -32,7 +32,8 @@ module Redmine::MenuManager::MenuHelper
     menu_items_for(menu, project) do |node|
       links << render_menu_node(node, project)
     end
-    links.empty? ? nil : content_tag('ul', links.join("\n"))
+    # TODO rails-3.1: Make nicer!
+    links.empty? ? nil : content_tag('ul', links.join("\n").html_safe)
   end
 
   def render_menu_node(node, project=nil)
@@ -40,7 +41,8 @@ module Redmine::MenuManager::MenuHelper
       return render_menu_node_with_children(node, project)
     else
       caption, url, selected = extract_node_details(node, project)
-      return content_tag('li',
+      # TODO rails-3.1: Make nicer!
+      return content_tag('li'.html_safe,
                            render_single_menu_node(node, caption, url, selected))
     end
   end
