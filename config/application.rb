@@ -63,7 +63,12 @@ module ChiliProject
 
     # Enable the asset pipeline
     config.assets.enabled = true
-    
+
+    config.generators do |g|
+      g.test_framework :rspec, :views => false, :view_specs => false
+      g.fixture_replacement :factory_girl, :dir => "spec/factories"
+    end
+
     # TODO rails-3.1: this will be needed only if we continue to support non-gem plugins
     # Use redmine's custom plugin locater
     #require Rails.root.join("lib", "redmine_plugin_locator")
