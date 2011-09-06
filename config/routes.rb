@@ -25,6 +25,7 @@ ChiliProject::Application.routes.draw do
   match '/my/page' => 'my#page', :as => 'my_page'
   match '/my/page_layout' => 'my#page_layout', :as => 'my_page_layout'
 
+  match '/search' => 'search#index', :as => 'search'
 
   match '/admin' => 'admin#index', :as => 'admin'
 
