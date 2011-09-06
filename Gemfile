@@ -22,11 +22,9 @@ gem 'awesome_nested_set'
 # TODO rails-3.1: review the core changes to open_id_authentication and decide on actions
 gem 'open_id_authentication'
 
-group :test do
-  gem 'shoulda', '~> 2.10.3'
-  gem 'edavis10-object_daddy', :require => 'object_daddy'
-  gem 'mocha'
-
+group :development, :test do
+  gem 'rspec-rails'
+  gem 'factory_girl_rails'
   platforms :mri_18 do gem 'ruby-debug' end
   platforms :mri_19 do gem 'ruby-debug19', :require => 'ruby-debug' end
 end
