@@ -16,9 +16,20 @@ ChiliProject::Application.routes.draw do
 
   match '/login' => 'account#login', :as => 'signin'
   match '/logout' => 'account#logout', :as => 'signout'
-  match '/account/register' => 'account#register'
+
+  match '/register' => 'account#register', :as => 'register'
+  match '/lost_password' => 'account#lost_password', :as => 'lost_password'
+
+
+  match '/my/account' => 'my#account', :as => 'my_account'
+  match '/my/page' => 'my#page', :as => 'my_page'
+  match '/my/page_layout' => 'my#page_layout', :as => 'my_page_layout'
+
+
+  match '/admin' => 'admin#index', :as => 'admin'
 
   match '/search/index' => 'search#index'
+
 
   match '/roles/workflow/:id/:role_id/:tracker_id' => 'roles#workflow'
   match '/help/:ctrl/:page' => 'help#index'
