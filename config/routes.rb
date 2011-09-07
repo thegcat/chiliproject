@@ -44,6 +44,9 @@ ChiliProject::Application.routes.draw do
   match '/watchers/new' => 'watchers#new', :as => 'new_watcher'
 
 
+  match '/time_entries' => 'time_entries#index', :as => 'time_entries'
+
+
 
   match '/roles/workflow/:id/:role_id/:tracker_id' => 'roles#workflow'
   match '/help/:ctrl/:page' => 'help#index'

@@ -312,7 +312,7 @@ module ApplicationHelper
   end
 
   def authoring(created, author, options={})
-    l(options[:label] || :label_added_time_by, :author => link_to_user(author), :age => time_tag(created))
+    l(options[:label] || :label_added_time_by, :author => link_to_user(author), :age => time_tag(created)).html_safe
   end
 
   def time_tag(time)
@@ -382,9 +382,9 @@ module ApplicationHelper
   end
 
   def other_formats_links(&block)
-    concat('<p class="other-formats">' + l(:label_export_to))
+    concat('<p class="other-formats">'.html_safe + l(:label_export_to))
     yield Redmine::Views::OtherFormatsBuilder.new(self)
-    concat('</p>')
+    concat('</p>'.html_safe)
   end
 
   def page_header_title
@@ -471,7 +471,7 @@ module ApplicationHelper
       replace_toc(text, @parsed_headings)
     end
 
-    text
+    text.html_safe
   end
 
   def parse_non_pre_blocks(text)
@@ -765,7 +765,7 @@ module ApplicationHelper
   def labelled_tabular_form_for(name, object, options, &proc)
     options[:html] ||= {}
     options[:html][:class] = 'tabular' unless options[:html].has_key?(:class)
-    form_for(name, object, options.merge({ :builder => TabularFormBuilder, :lang => current_language}), &proc)
+    form_for((object || name), options.merge({ :builder => TabularFormBuilder, :lang => current_language}), &proc)
   end
 
   def back_url_hidden_field_tag
@@ -789,11 +789,11 @@ module ApplicationHelper
     legend = options[:legend] || ''
     content_tag('table',
       content_tag('tr',
-        (pcts[0] > 0 ? content_tag('td', '', :style => "width: #{pcts[0]}%;", :class => 'closed') : '') +
-        (pcts[1] > 0 ? content_tag('td', '', :style => "width: #{pcts[1]}%;", :class => 'done') : '') +
-        (pcts[2] > 0 ? content_tag('td', '', :style => "width: #{pcts[2]}%;", :class => 'todo') : '')
-      ), :class => 'progress', :style => "width: #{width};") +
-      content_tag('p', legend, :class => 'pourcent')
+        (pcts[0] > 0 ? content_tag('td', '', :style => "width: #{pcts[0]}%;", :class => 'closed').html_safe : '').html_safe +
+        (pcts[1] > 0 ? content_tag('td', '', :style => "width: #{pcts[1]}%;", :class => 'done').html_safe : '').html_safe +
+        (pcts[2] > 0 ? content_tag('td', '', :style => "width: #{pcts[2]}%;", :class => 'todo').html_safe : '').html_safe
+      ), :class => 'progress', :style => "width: #{width};").html_safe +
+      content_tag('p', legend, :class => 'pourcent').html_safe
   end
 
   def checked_image(checked=true)
