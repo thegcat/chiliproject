@@ -893,7 +893,7 @@ module ApplicationHelper
 
   # Returns the javascript tags that are included in the html layout head
   def javascript_heads
-    tags = javascript_include_tag :application
+    tags = javascript_include_tag :prototype, :effects, :controls, :dragdrop, :application
     unless User.current.pref.warn_on_leaving_unsaved == '0'
       # TODO rails-3.1: Make nicer!
       tags << "\n".html_safe + javascript_tag("Event.observe(window, 'load', function(){ new WarnLeavingUnsaved('#{escape_javascript( l(:text_warn_on_leaving_unsaved) )}'); });")
