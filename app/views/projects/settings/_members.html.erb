@@ -19,7 +19,7 @@
   <td class="roles">
     <span id="member-<%= member.id %>-roles"><%=h member.roles.sort.collect(&:to_s).join(', ') %></span>
     <% if authorize_for('members', 'edit') %>
-      <% form_for(member, :remote => true, :url => {:controller => 'members', :action => 'edit', :id => member},
+      <%= form_for(member, :remote => true, :url => {:controller => 'members', :action => 'edit', :id => member},
       																		:method => :post,
       																		:html => { :id => "member-#{member.id}-roles-form", :class => 'hol' }) do |f| %>
       	<p><% roles.each do |role| %>
