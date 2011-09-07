@@ -1,9 +1,9 @@
-<% remote_form_for :repository, @repository,
+<%= form_for @repository || :repository, :remote => true,
                    :url => { :controller => 'repositories', :action => 'edit', :id => @project },
                    :builder => TabularFormBuilder,
                    :lang => current_language do |f| %>
 
-<%= error_messages_for 'repository' %>
+<%#= error_messages_for 'repository' %>
 
 <div class="box tabular">
 <p><%= label_tag('repository_scm', l(:label_scm)) %><%= scm_select_tag(@repository) %></p>

@@ -29,7 +29,20 @@ ChiliProject::Application.routes.draw do
 
   match '/admin' => 'admin#index', :as => 'admin'
 
-  match '/search/index' => 'search#index'
+  match '/help/wiki_syntax' => 'help#wiki_syntax', :as => 'help_wiki_syntax'
+
+
+  match '/versions/:id' => 'versions#show', :as => 'version'
+  match '/versions/edit/:id' => 'versions#edit', :as => 'edit_version'
+  match '/versions/destroy/:id' => 'versions#destroy', :as => 'destroy_version'
+  match '/versions/close_completed_versions/:id' => 'versions#close_completed', :as => 'close_completed_project_versions'
+
+
+  match '/queries/new' => 'queries#new', :as => 'new_query'
+
+  match '/watchers/watch' => 'watchers#watch', :as => 'watcher_watch'
+  match '/watchers/new' => 'watchers#new', :as => 'new_watcher'
+
 
 
   match '/roles/workflow/:id/:role_id/:tracker_id' => 'roles#workflow'
@@ -241,6 +254,7 @@ ChiliProject::Application.routes.draw do
   match '/attachments/:id' => 'attachments#show', :id => /\d+/
   match '/attachments/:id/:filename' => 'attachments#show', :id => /\d+/, :filename => /.*/
   match '/attachments/download/:id/:filename' => 'attachments#download', :id => /\d+/, :filename => /.*/
+  match '/attachments/destroy/:id' => 'attachments#destroy', :as => 'destroy_attachment'
 
   resources :groups
 
