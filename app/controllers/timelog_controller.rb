@@ -57,16 +57,16 @@ class TimelogController < ApplicationController
 
         render :layout => !request.xhr?
       }
-      format.api  {
-        @entry_count = TimeEntry.visible.count(:include => [:project, :issue], :conditions => cond.conditions)
-        @entry_pages = Paginator.new self, @entry_count, per_page_option, params['page']
-        @entries = TimeEntry.visible.find(:all,
-                                  :include => [:project, :activity, :user, {:issue => :tracker}],
-                                  :conditions => cond.conditions,
-                                  :order => sort_clause,
-                                  :limit  =>  @entry_pages.items_per_page,
-                                  :offset =>  @entry_pages.current.offset)
-      }
+#      format.api  {
+#        @entry_count = TimeEntry.visible.count(:include => [:project, :issue], :conditions => cond.conditions)
+#        @entry_pages = Paginator.new self, @entry_count, per_page_option, params['page']
+#        @entries = TimeEntry.visible.find(:all,
+#                                  :include => [:project, :activity, :user, {:issue => :tracker}],
+#                                  :conditions => cond.conditions,
+#                                 :order => sort_clause,
+#                                  :limit  =>  @entry_pages.items_per_page,
+#                                  :offset =>  @entry_pages.current.offset)
+#      }
       format.atom {
         entries = TimeEntry.visible.find(:all,
                                  :include => [:project, :activity, :user, {:issue => :tracker}],
@@ -90,7 +90,7 @@ class TimelogController < ApplicationController
     respond_to do |format|
       # TODO: Implement html response
       format.html { render :nothing => true, :status => 406 }
-      format.api
+#      format.api
     end
   end
 
@@ -115,12 +115,12 @@ class TimelogController < ApplicationController
           flash[:notice] = l(:notice_successful_update)
           redirect_back_or_default :action => 'index', :project_id => @time_entry.project
         }
-        format.api  { render :action => 'show', :status => :created, :location => time_entry_url(@time_entry) }
+#        format.api  { render :action => 'show', :status => :created, :location => time_entry_url(@time_entry) }
       end
     else
       respond_to do |format|
         format.html { render :action => 'edit' }
-        format.api  { render_validation_errors(@time_entry) }
+#        format.api  { render_validation_errors(@time_entry) }
       end
     end
   end
@@ -143,12 +143,12 @@ class TimelogController < ApplicationController
           flash[:notice] = l(:notice_successful_update)
           redirect_back_or_default :action => 'index', :project_id => @time_entry.project
         }
-        format.api  { head :ok }
+#        format.api  { head :ok }
       end
     else
       respond_to do |format|
         format.html { render :action => 'edit' }
-        format.api  { render_validation_errors(@time_entry) }
+#        format.api  { render_validation_errors(@time_entry) }
       end
     end
   end
@@ -161,7 +161,7 @@ class TimelogController < ApplicationController
           flash[:notice] = l(:notice_successful_delete)
           redirect_to :back
         }
-        format.api  { head :ok }
+#        format.api  { head :ok }
       end
     else
       respond_to do |format|
@@ -169,7 +169,7 @@ class TimelogController < ApplicationController
           flash[:error] = l(:notice_unable_delete_time_entry)
           redirect_to :back
         }
-        format.api  { render_validation_errors(@time_entry) }
+#        format.api  { render_validation_errors(@time_entry) }
       end
     end
   rescue ::ActionController::RedirectBackError
