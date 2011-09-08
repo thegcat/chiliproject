@@ -4,6 +4,8 @@ gem 'rails', '~> 3.1.0'
 gem 'json'
 gem 'prototype-rails', :git => "https://github.com/rubychan/prototype-rails.git"
 
+gem 'therubyracer'
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
