@@ -54,7 +54,8 @@ end
 # TODO rails-3.1: any reason to keep sqlite3-ruby on <1.9?
 platforms :mri_18 do
   group :sqlite do
-    gem "sqlite3-ruby", "< 1.3", :require => "sqlite3"
+    # gem "sqlite3-ruby", "< 1.3", :require => "sqlite3"
+    gem "sqlite3"
   end
 end
 
