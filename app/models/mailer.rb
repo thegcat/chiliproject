@@ -20,7 +20,7 @@ class Mailer < ActionMailer::Base
   helper :journals
   helper :custom_fields
 
-  include ActionController::UrlWriter
+  # include ActionController::UrlWriter
   include Redmine::I18n
 
   def self.default_url_options
