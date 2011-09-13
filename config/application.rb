@@ -27,6 +27,8 @@ module ChiliProject
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
+    config.session_store :cookie_store, :key => "_redmine_session"
+    config.secret_token = "some secret phrase of at least 30 characters"
 
     # Custom directories with classes and modules you want to be autoloadable.
     # config.autoload_paths += %W(#{config.root}/extras)
