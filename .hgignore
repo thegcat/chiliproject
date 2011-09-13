@@ -25,9 +25,11 @@ tmp/sockets/*
 tmp/test/*
 vendor/rails
 *.rbc
+
 .svn/
 .git/
-doc/app
-/.bundle
-/Gemfile.lock
-/.rvmrc*
+
+.bundle
+Gemfile.lock
+Gemfile.local
+
