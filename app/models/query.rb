@@ -213,21 +213,21 @@ class Query < ActiveRecord::Base
 
     if project
       # project specific filters
-      categories = @project.issue_categories.all
+      categories = project.issue_categories.all
       unless categories.empty?
         @available_filters["category_id"] = { :type => :list_optional, :order => 6, :values => categories.collect{|s| [s.name, s.id.to_s] } }
       end
-      versions = @project.shared_versions.all
+      versions = project.shared_versions.all
       unless versions.empty?
         @available_filters["fixed_version_id"] = { :type => :list_optional, :order => 7, :values => versions.sort.collect{|s| ["#{s.project.name} - #{s.name}", s.id.to_s] } }
       end
-      unless @project.leaf?
-        subprojects = @project.descendants.visible.all
+      unless project.leaf?
+        subprojects = project.descendants.visible.all
         unless subprojects.empty?
           @available_filters["subproject_id"] = { :type => :list_subprojects, :order => 13, :values => subprojects.collect{|s| [s.name, s.id.to_s] } }
         end
       end
-      add_custom_fields_filters(@project.all_issue_custom_fields)
+      add_custom_fields_filters(project.all_issue_custom_fields)
     else
       # global filters for cross project issue list
       system_shared_versions = Version.visible.find_all_by_sharing('system')
@@ -288,7 +288,7 @@ class Query < ActiveRecord::Base
 
   def available_columns
     return @available_columns if @available_columns
-    @available_columns = Query.available_columns
+    @available_columns = self.class.available_columns
     @available_columns += (project ?
                             project.all_issue_custom_fields :
                             IssueCustomField.find(:all)
@@ -393,7 +393,7 @@ class Query < ActiveRecord::Base
 
   def project_statement
     project_clauses = []
-    if project && !@project.descendants.active.empty?
+    if project && !project.descendants.active.empty?
       ids = [project.id]
       if has_filter?("subproject_id")
         case operator_for("subproject_id")
@@ -532,7 +532,7 @@ class Query < ActiveRecord::Base
     order_option = nil if order_option.blank?
 
     Issue.find :all, :include => ([:status, :project] + (options[:include] || [])).uniq,
-                     :conditions => Query.merge_conditions(statement, options[:conditions]),
+                     :conditions => (options[:conditions]),
                      :order => order_option,
                      :limit  => options[:limit],
                      :offset => options[:offset]
@@ -555,8 +555,7 @@ class Query < ActiveRecord::Base
   # Returns the versions
   # Valid options are :conditions
   def versions(options={})
-    Version.find :all, :include => :project,
-                       :conditions => Query.merge_conditions(project_statement, options[:conditions])
+    Version.where(project_statement).where(options[:conditions]) # :include => :project,
   rescue ::ActiveRecord::StatementInvalid => e
     raise StatementInvalid.new(e.message)
   end

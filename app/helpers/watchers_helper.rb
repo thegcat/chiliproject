@@ -42,12 +42,10 @@ module WatchersHelper
            :object_id => object.id,
            :replace => options.delete('replace')}
 
-    url_options = {:url => url}
-
     html_options = options.merge(:href => url_for(url))
     html_options[:class] = html_options[:class].to_s + (watched ? ' icon icon-fav' : ' icon icon-fav-off')
 
-    link_to_remote((watched ? l(:button_unwatch) : l(:button_watch)), url_options, html_options)
+    link_to((watched ? l(:button_unwatch) : l(:button_watch)), url, {:remote => true, :html => html_options})
   end
 
   # Returns a comma separated list of users watching the given object
