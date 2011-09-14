@@ -86,7 +86,7 @@ module PDF_Japanese
   end
 
   def GetStringWidth(s)
-  	if(@CurrentFont['type']=='Type0')
+  	if(@current_font['type']=='Type0')
   		return GetSJISStringWidth(s)
   	else
   		return super(s)
@@ -96,11 +96,11 @@ module PDF_Japanese
   def GetSJISStringWidth(s)
   	#SJIS version of GetStringWidth()
   	l=0
-  	cw=@CurrentFont['cw']
+  	cw=@current_font['cw']
   	nb=s.length
   	i=0
   	while(i<nb)
-  		o=s[i]
+  		o = s[i].is_a?(String) ? s[i].ord : s[i]
   		if(o<128)
   			#ASCII
   			l+=cw[o.chr] if cw[o.chr]
@@ -115,24 +115,29 @@ module PDF_Japanese
   			i+=2
   		end
   	end
-  	return l*@FontSize/1000
+  	return l*@font_size/1000
   end
 
-  def MultiCell(w,h,txt,border=0,align='L',fill=0)
-  	if(@CurrentFont['type']=='Type0')
-  		SJISMultiCell(w,h,txt,border,align,fill)
+  def MultiCell(w,h,txt,border=0,align='L',fill=0,ln=1)
+  	if(@current_font['type']=='Type0')
+  		SJISMultiCell(w,h,txt,border,align,fill,ln)
   	else
-  		super(w,h,txt,border,align,fill)
+  		super(w,h,txt,border,align,fill,ln)
   	end  
   end
 
-  def SJISMultiCell(w,h,txt,border=0,align='L',fill=0)
+  def SJISMultiCell(w,h,txt,border=0,align='L',fill=0,ln=1)
+
+  	# save current position
+  	prevx = @x;
+  	prevy = @y;
+
   	#Output text with automatic or explicit line breaks
-  	cw=@CurrentFont['cw']
+  	cw=@current_font['cw']
   	if(w==0)
-  		w=@w-@rMargin-@x
+  		w=@w-@r_margin-@x
   	end  
-  	wmax=(w-2*@cMargin)*1000/@FontSize
+  	wmax=(w-2*@c_margin)*1000/@font_size
   	s=txt.gsub("\r",'')
   	nb=s.length
   	if(nb>0 and s[nb-1]=="\n")
@@ -158,7 +163,7 @@ module PDF_Japanese
   	nl=1
   	while(i<nb)
   		#Get next character
-  		c=s[i]
+  		c = s[i].is_a?(String) ? s[i].ord : s[i]
   		o=c #o=ord(c)
   		if(o==10)
   			#Explicit line break
@@ -221,22 +226,34 @@ module PDF_Japanese
   		b+='B'
   	end  
   	Cell(w,h,s[j,i-j],b,2,align,fill)
-  	@x=@lMargin
+
+  	# move cursor to specified position
+  	if (ln == 1)
+  		# go to the beginning of the next line
+  		@x=@l_margin
+  	elsif (ln == 0)
+  		# go to the top-right of the cell
+  		@y = prevy;
+  		@x = prevx + w;
+  	elsif (ln == 2)
+  		# go to the bottom-left of the cell
+  		@x = prevx;
+  	end
   end
 
-  def Write(h,txt,link='')
-  	if(@CurrentFont['type']=='Type0')
- 		SJISWrite(h,txt,link)
+  def Write(h,txt,link='',fill=0)
+  	if(@current_font['type']=='Type0')
+ 		SJISWrite(h,txt,link,fill)
  	else
- 		super(h,txt,link)
+ 		super(h,txt,link,fill)
   	end  
   end
 
-  def SJISWrite(h,txt,link)
+  def SJISWrite(h,txt,link,fill=0)
   	#SJIS version of Write()
-  	cw=@CurrentFont['cw']
-  	w=@w-@rMargin-@x
-  	wmax=(w-2*@cMargin)*1000/@FontSize
+  	cw=@current_font['cw']
+  	w=@w-@r_margin-@x
+  	wmax=(w-2*@c_margin)*1000/@font_size
   	s=txt.gsub("\r",'')
   	nb=s.length
   	sep=-1
@@ -246,20 +263,20 @@ module PDF_Japanese
   	nl=1
   	while(i<nb)
   		#Get next character
-  		c=s[i]
+  		c = s[i].is_a?(String) ? s[i].ord : s[i]
   		o=c
   		if(o==10)
   			#Explicit line break
-  			Cell(w,h,s[j,i-j],0,2,'',0,link)
+  			Cell(w,h,s[j,i-j],0,2,'',fill,link)
   			i+=1
   			sep=-1
   			j=i
   			l=0
   			if(nl==1)
   				#Go to left margin
-  				@x=@lMargin
-  				w=@w-@rMargin-@x
-  				wmax=(w-2*@cMargin)*1000/@FontSize
+  				@x=@l_margin
+  				w=@w-@r_margin-@x
+  				wmax=(w-2*@c_margin)*1000/@font_size
   			end
   			nl+=1
   			next
@@ -285,12 +302,12 @@ module PDF_Japanese
   		if(l>wmax)
   			#Automatic line break
   			if(sep==-1 or i==j)
-  				if(@x>@lMargin)
+  				if(@x>@l_margin)
   					#Move to next line
-  					@x=@lMargin
+  					@x=@l_margin
   					@y+=h
-  					w=@w-@rMargin-@x
-  					wmax=(w-2*@cMargin)*1000/@FontSize
+  					w=@w-@r_margin-@x
+  					wmax=(w-2*@c_margin)*1000/@font_size
   					i+=n
   					nl+=1
   					next
@@ -298,18 +315,18 @@ module PDF_Japanese
   				if(i==j)
   					i+=n
         	end  
-  				Cell(w,h,s[j,i-j],0,2,'',0,link)
+  				Cell(w,h,s[j,i-j],0,2,'',fill,link)
   			else
-  				Cell(w,h,s[j,sep-j],0,2,'',0,link)
+  				Cell(w,h,s[j,sep-j],0,2,'',fill,link)
   				i=(s[sep].chr==' ') ? sep+1 : sep
   			end
   			sep=-1
   			j=i
   			l=0
   			if(nl==1)
-  				@x=@lMargin
-  				w=@w-@rMargin-@x
-  				wmax=(w-2*@cMargin)*1000/@FontSize
+  				@x=@l_margin
+  				w=@w-@r_margin-@x
+  				wmax=(w-2*@c_margin)*1000/@font_size
   			end
   			nl+=1
   		else
@@ -321,7 +338,7 @@ module PDF_Japanese
   	end
   	#Last chunk
   	if(i!=j)
-  		Cell(l/1000*@FontSize,h,s[j,i-j],0,0,'',0,link)
+  		Cell(l*@font_size/1000.0,h,s[j,i-j],0,0,'',fill,link)
   	end  
   end
   
@@ -337,10 +354,10 @@ private
   	end
   	# mqr=get_magic_quotes_runtime()
   	# set_magic_quotes_runtime(0)
-    @FontFiles.each_pair do |file, info|
+    @font_files.each_pair do |file, info|
   		#Font file embedding
   		newobj()
-  		@FontFiles[file]['n']=@n
+  		@font_files[file]['n']=@n
   		if(defined('FPDF_FONTPATH'))
   			file=FPDF_FONTPATH+file
     	end  
@@ -414,7 +431,7 @@ private
         	end  
   				file=font['file']
   				if(file)
-  					s+=' /FontFile'+(font['type']=='Type1' ? '' : '2')+' '+@FontFiles[file]['n']+' 0 R'
+  					s+=' /FontFile'+(font['type']=='Type1' ? '' : '2')+' '+@font_files[file]['n']+' 0 R'
         	end  
   				out(s+'>>')
   				out('endobj')

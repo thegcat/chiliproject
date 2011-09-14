@@ -2,7 +2,10 @@ source :rubygems
 
 gem 'rails', '~> 3.1.0'
 gem 'json'
-gem 'prototype-rails', :git => "https://github.com/rubychan/prototype-rails.git"
+# gem 'prototype-rails', :git => "https://github.com/rubychan/prototype-rails.git"
+gem 'prototype-rails'
+
+gem 'therubyracer'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -50,7 +53,8 @@ end
 # TODO rails-3.1: any reason to keep sqlite3-ruby on <1.9?
 platforms :mri_18 do
   group :sqlite do
-    gem "sqlite3-ruby", "< 1.3", :require => "sqlite3"
+    # gem "sqlite3-ruby", "< 1.3", :require => "sqlite3"
+    gem "sqlite3"
   end
 end
 

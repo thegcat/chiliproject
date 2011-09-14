@@ -16,9 +16,37 @@ ChiliProject::Application.routes.draw do
 
   match '/login' => 'account#login', :as => 'signin'
   match '/logout' => 'account#logout', :as => 'signout'
-  match '/account/register' => 'account#register'
 
-  match '/search/index' => 'search#index'
+  match '/register' => 'account#register', :as => 'register'
+  match '/lost_password' => 'account#lost_password', :as => 'lost_password'
+
+
+  match '/my/account' => 'my#account', :as => 'my_account'
+  match '/my/page' => 'my#page', :as => 'my_page'
+  match '/my/page_layout' => 'my#page_layout', :as => 'my_page_layout'
+
+  match '/search' => 'search#index', :as => 'search'
+
+  match '/admin' => 'admin#index', :as => 'admin'
+
+  match '/help/wiki_syntax' => 'help#wiki_syntax', :as => 'help_wiki_syntax'
+
+
+  match '/versions/:id' => 'versions#show', :as => 'version'
+  match '/versions/edit/:id' => 'versions#edit', :as => 'edit_version'
+  match '/versions/destroy/:id' => 'versions#destroy', :as => 'destroy_version'
+  match '/versions/close_completed_versions/:id' => 'versions#close_completed', :as => 'close_completed_project_versions'
+
+
+  match '/queries/new' => 'queries#new', :as => 'new_query'
+
+  match '/watchers/watch' => 'watchers#watch', :as => 'watcher_watch'
+  match '/watchers/new' => 'watchers#new', :as => 'new_watcher'
+
+
+  match '/time_entries' => 'time_entries#index', :as => 'time_entries'
+
+
 
   match '/roles/workflow/:id/:role_id/:tracker_id' => 'roles#workflow'
   match '/help/:ctrl/:page' => 'help#index'
@@ -229,6 +257,7 @@ ChiliProject::Application.routes.draw do
   match '/attachments/:id' => 'attachments#show', :id => /\d+/
   match '/attachments/:id/:filename' => 'attachments#show', :id => /\d+/, :filename => /.*/
   match '/attachments/download/:id/:filename' => 'attachments#download', :id => /\d+/, :filename => /.*/
+  match '/attachments/destroy/:id' => 'attachments#destroy', :as => 'destroy_attachment'
 
   resources :groups
 
