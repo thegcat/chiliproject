@@ -86,7 +86,6 @@ class UsersController < ApplicationController
     @auth_sources = AuthSource.find(:all)
   end
 
-  verify :method => :post, :only => :create, :render => {:nothing => true, :status => :method_not_allowed }
   def create
     @user = User.new(:language => Setting.default_language, :mail_notification => Setting.default_notification_option)
     @user.safe_attributes = params[:user]
@@ -131,7 +130,6 @@ class UsersController < ApplicationController
     @membership ||= Member.new
   end
 
-  verify :method => :put, :only => :update, :render => {:nothing => true, :status => :method_not_allowed }
   def update
     @user.admin = params[:user][:admin] if params[:user][:admin]
     @user.login = params[:user][:login] if params[:user][:login]
