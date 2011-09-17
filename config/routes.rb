@@ -264,12 +264,12 @@ ChiliProject::Application.routes.draw do
 
   scope :controller => 'issue_statuses' do
     match '/issue_statuses/:action(/:id)', :action => /destroy|create|update|move|update_issue_done_ratio/, :id => /\d+/, :via => :post
-    macth '/issue_statuses(/:action(/:id))', :id => /\d+/ # TODO rails-3.1: limit those actions to those not defined above
+    match '/issue_statuses(/:action(/:id))', :id => /\d+/ # TODO rails-3.1: limit those actions to those not defined above
   end
 
   scope :controller => 'roles' do
     match '/roles/:action(/:id)', :action => /destroy|move/, :id => /\d+/, :via => :post
-    macth '/roles(/:action(/:id))', :id => /\d+/ # TODO rails-3.1: limit those actions to those not defined above
+    match '/roles(/:action(/:id))', :id => /\d+/ # TODO rails-3.1: limit those actions to those not defined above
   end
 
   scope :controller => 'trackers' do
