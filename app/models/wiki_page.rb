@@ -38,10 +38,7 @@ class WikiPage < ActiveRecord::Base
   validates_associated :content
 
   # eager load information about last updates, without loading text
-  named_scope :with_updated_on, {
-    :select => "#{WikiPage.table_name}.*, #{WikiContent.table_name}.updated_on",
-    :joins => "LEFT JOIN #{WikiContent.table_name} ON #{WikiContent.table_name}.page_id = #{WikiPage.table_name}.id"
-  }
+  scope :with_updated_on, joins(:content).select("#{WikiPage.table_name}.*, #{WikiContent.table_name}.updated_on")
 
   # Wiki pages that are protected by default
   DEFAULT_PROTECTED_PAGES = %w(sidebar)
