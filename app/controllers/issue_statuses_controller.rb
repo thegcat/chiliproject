@@ -16,8 +16,9 @@ class IssueStatusesController < ApplicationController
 
   before_filter :require_admin
 
-  verify :method => :post, :only => [ :destroy, :create, :update, :move, :update_issue_done_ratio ],
-         :redirect_to => { :action => :index }
+  # TODO rails-3.1: convert controller to restful
+  #verify :method => :post, :only => [ :destroy, :create, :update, :move, :update_issue_done_ratio ],
+  #       :redirect_to => { :action => :index }
 
   def index
     @issue_status_pages, @issue_statuses = paginate :issue_statuses, :per_page => 25, :order => "position"

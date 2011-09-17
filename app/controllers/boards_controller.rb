@@ -56,8 +56,6 @@ class BoardsController < ApplicationController
     end
   end
 
-  verify :method => :post, :only => [ :destroy ], :redirect_to => { :action => :index }
-
   def new
     @board = Board.new(params[:board])
     @board.project = @project

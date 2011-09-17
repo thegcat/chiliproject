@@ -19,8 +19,6 @@ class IssueCategoriesController < ApplicationController
   before_filter :find_project, :only => :new
   before_filter :authorize
 
-  verify :method => :post, :only => :destroy
-
   def new
     @category = @project.issue_categories.build(params[:category])
     if request.post?

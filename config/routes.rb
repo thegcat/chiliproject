@@ -207,6 +207,7 @@ ChiliProject::Application.routes.draw do
   end
 
   match '/projects/:project_id/issue_categories/new' => 'issue_categories#new'
+  match '/issue_categories/destroy/:id' => 'issue_categories#destroy', :id => /\d+/, :via => :post
 
   scope :controller => 'repositories' do
     scope :via => :get do
@@ -229,6 +230,7 @@ ChiliProject::Application.routes.draw do
   match '/attachments/:id' => 'attachments#show', :id => /\d+/
   match '/attachments/:id/:filename' => 'attachments#show', :id => /\d+/, :filename => /.*/
   match '/attachments/download/:id/:filename' => 'attachments#download', :id => /\d+/, :filename => /.*/
+  match '/attachments/destroy/:id' => 'attachments#destroy', :id => /\d+/, :via => :post
 
   resources :groups
 
@@ -254,6 +256,35 @@ ChiliProject::Application.routes.draw do
     match '/sys/projects.:format', :action => 'projects', :via => :get
     match '/sys/projects/:id/repository.:format', :action => 'create_project_repository', :via => :post
   end
+
+  scope :controller => 'enumerations' do
+    match '/enumerations/:action(/:id)', :action => /create|update|destroy/, :id => /\d+/, :via => :post
+    match '/enumerations(/:action(/:id))', :id => /\d+/ # TODO rails-3.1: limit those actions to those not defined above
+  end
+
+  scope :controller => 'issue_statuses' do
+    match '/issue_statuses/:action(/:id)', :action => /destroy|create|update|move|update_issue_done_ratio/, :id => /\d+/, :via => :post
+    macth '/issue_statuses(/:action(/:id))', :id => /\d+/ # TODO rails-3.1: limit those actions to those not defined above
+  end
+
+  scope :controller => 'roles' do
+    match '/roles/:action(/:id)', :action => /destroy|move/, :id => /\d+/, :via => :post
+    macth '/roles(/:action(/:id))', :id => /\d+/ # TODO rails-3.1: limit those actions to those not defined above
+  end
+
+  scope :controller => 'trackers' do
+    match '/trackers/:action(/:id)', :action => /destroy/, :id => /\d+/, :via => :post
+    match '/trackers(/:action(/:id))', :id => /\d+/ # TODO rails-3.1: limit those actions to those not defined above
+  end
+
+  resources :watchers, :only => [:new, :destroy] do
+    member do
+      post :watch
+      post :unwatch
+    end
+  end
+
+  match '/mail_handler' => 'mail_handler#index', :via => :post
 
   match '/robots.txt' => 'welcome#robots'
 
