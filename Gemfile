@@ -24,6 +24,7 @@ gem 'open_id_authentication'
 
 group :development, :test do
   gem 'rspec-rails'
+  gem 'shoulda-matchers'
   gem 'factory_girl_rails'
   platforms :mri_18 do gem 'ruby-debug' end
   platforms :mri_19 do gem 'ruby-debug19', :require => 'ruby-debug' end
