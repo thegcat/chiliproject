@@ -22,6 +22,8 @@ RSpec.configure do |config|
   require 'factory_girl'
   config.include Factory::Syntax::Methods
 
+  config.include Redmine::I18n
+
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
