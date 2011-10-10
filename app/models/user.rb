@@ -48,8 +48,12 @@ class User < Principal
   has_one :api_token, :dependent => :destroy, :class_name => 'Token', :conditions => "action='api'"
   belongs_to :auth_source
 
+  # TODO rails-3.1: the native scope breaks the initial migration, find out what constellation causes this
   # Active non-anonymous users scope
-  scope :active, where(:status => STATUS_ACTIVE)
+  #scope :active, where(:status => STATUS_ACTIVE)
+  def self.active
+    where :status => STATUS_ACTIVE
+  end
 
   acts_as_customizable
 

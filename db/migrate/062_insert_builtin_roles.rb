@@ -13,6 +13,9 @@
 
 class InsertBuiltinRoles < ActiveRecord::Migration
   def self.up
+    # rails doesn't know about the previously created builtin attribute without this
+    Role.reset_column_information
+
     nonmember = Role.new(:name => 'Non member', :position => 0)
     nonmember.builtin = Role::BUILTIN_NON_MEMBER
     nonmember.save
