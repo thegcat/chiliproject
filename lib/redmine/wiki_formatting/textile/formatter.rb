@@ -12,102 +12,60 @@
 # See doc/COPYRIGHT.rdoc for more details.
 #++
 
-require 'redcloth3'
 
 module Redmine
   module WikiFormatting
     module Textile
-      class Formatter < RedCloth3
+      class Formatter < RedCloth::TextileDoc
         include ActionView::Helpers::TagHelper
-
-        # auto_link rule after textile rules so that it doesn't break !image_url! tags
-        RULES = [:textile, :block_markdown_rule, :inline_auto_link, :inline_auto_mailto]
 
         def initialize(*args)
           super
-          self.hard_breaks=true
-          self.no_span_caps=true
           self.filter_styles=true
+          self.no_span_caps=true
         end
 
-        def to_html(*rules)
-          @toc = []
-          super(*RULES).to_s
+        def before_transform(text)
+          text = foo
+          super
+          escape_html_tags text
+          email_like_quotes text
         end
 
-      private
+        def to_html( *rules )
+          rules.unshift :escape_html_tags, :block_textile_quotes
+          apply_rules(rules)
 
-        # Patch for RedCloth.  Fixed in RedCloth r128 but _why hasn't released it yet.
-        # <a href="http://code.whytheluckystiff.net/redcloth/changeset/128">http://code.whytheluckystiff.net/redcloth/changeset/128</a>
-        def hard_break( text )
-          text.gsub!( /(.)\n(?!\n|\Z| *([#*=]+(\s|$)|[{|]))/, "\\1<br />" ) if hard_breaks
+          to(RedCloth::Formatters::HTML)
         end
 
-        # Patch to add code highlighting support to RedCloth
-        def smooth_offtags( text )
-          unless @pre_list.empty?
-            ## replace <pre> content
-            text.gsub!(/<redpre#(\d+)>/) do
-              content = @pre_list[$1.to_i]
-              if content.match(/<code\s+class="(\w+)">\s?(.+)/m)
-                content = "<code class=\"#{$1} syntaxhl\">" +
-                  Redmine::SyntaxHighlighting.highlight_by_language($2, $1)
+        QUOTES_RE = /(^>+([^\n]*?)(\n|$))+/m
+        QUOTES_CONTENT_RE = /^([> ]+)(.*)$/m
+
+        def block_textile_quotes( text )
+          text.gsub!( QUOTES_RE ) do |match|
+            lines = match.split( /\n/ )
+            quotes = ''
+            indent = 0
+            lines.each do |line|
+              line =~ QUOTES_CONTENT_RE
+              bq,content = $1, $2
+              l = bq.count('>')
+              if l != indent
+                quotes << ("\n\n" + (l>indent ? '<blockquote>' * (l-indent) : '</blockquote>' * (indent-l)) + "\n\n")
+                indent = l
               end
-              content
+              quotes << (content + "\n")
             end
+            quotes << ("\n" + '</blockquote>' * indent + "\n\n")
+            quotes
           end
         end
 
-        AUTO_LINK_RE = %r{
-                        (                          # leading text
-                          <\w+.*?>|                # leading HTML tag, or
-                          [^=<>!:'"/]|             # leading punctuation, or
-                          ^                        # beginning of line
-                        )
-                        (
-                          (?:https?://)|           # protocol spec, or
-                          (?:s?ftps?://)|
-                          (?:www\.)                # www.*
-                        )
-                        (
-                          (\S+?)                   # url
-                          (\/)?                    # slash
-                        )
-                        ((?:&gt;)?|[^\w\=\/;\(\)]*?)               # post
-                        (?=<|\s|$)
-                       }x unless const_defined?(:AUTO_LINK_RE)
+        ALLOWED_TAGS = %w(redpre pre code notextile)
 
-        # Turns all urls into clickable links (code from Rails).
-        def inline_auto_link(text)
-          text.gsub!(AUTO_LINK_RE) do
-            all, leading, proto, url, post = $&, $1, $2, $3, $6
-            if leading =~ /<a\s/i || leading =~ /![<>=]?/
-              # don't replace URL's that are already linked
-              # and URL's prefixed with ! !> !< != (textile images)
-              all
-            else
-              # Idea below : an URL with unbalanced parethesis and
-              # ending by ')' is put into external parenthesis
-              if ( url[-1]==?) and ((url.count("(") - url.count(")")) < 0 ) )
-                url=url[0..-2] # discard closing parenth from url
-                post = ")"+post # add closing parenth to post
-              end
-              tag = content_tag('a', proto + url, :href => "#{proto=="www."?"http://www.":proto}#{url}", :class => 'external')
-              %(#{leading}#{tag}#{post})
-            end
-          end
-        end
-
-        # Turns all email addresses into clickable links (code from Rails).
-        def inline_auto_mailto(text)
-          text.gsub!(/([\w\.!#\$%\-+.]+@[A-Za-z0-9\-]+(\.[A-Za-z0-9\-]+)+)/) do
-            mail = $1
-            if text.match(/<a\b[^>]*>(.*)(#{Regexp.escape(mail)})(.*)<\/a>/)
-              mail
-            else
-              content_tag('a', mail, :href => "mailto:#{mail}", :class => "email")
-            end
-          end
+        def escape_html_tags(text)
+          text.gsub!(%r{<(\/?([!\w]+)[^<>\n]*)(>?)}) {|m| ALLOWED_TAGS.include?($2) ? "<#{$1}#{$3}" : "&lt;#{$1}#{'&gt;' unless $3.blank?}" }
         end
       end
     end
