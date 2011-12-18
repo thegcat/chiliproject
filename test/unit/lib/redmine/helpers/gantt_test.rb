@@ -14,21 +14,10 @@
 require File.expand_path('../../../../../test_helper', __FILE__)
 
 class Redmine::Helpers::GanttHelperTest < ActionView::TestCase
-  # Utility methods and classes so assert_select can be used.
-  class GanttViewTest < ActionView::Base
-    include ActionView::Helpers::UrlHelper
-    include ActionView::Helpers::TextHelper
-    include Rails.application.routes.url_helpers
-    include ApplicationHelper
-    include ProjectsHelper
-    include IssuesHelper
-
-    def self.default_url_options
-      {:only_path => true }
-    end
-  end
-
   include ActionController::Assertions::SelectorAssertions
+  include ApplicationHelper
+  include ProjectsHelper
+  include IssuesHelper
 
   def setup
     setup_with_controller
