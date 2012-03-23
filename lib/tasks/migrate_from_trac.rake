@@ -67,6 +67,11 @@ namespace :redmine do
                         'developer' => developer_role
                         }
 
+      class ::Journal
+        def touch_journaled_after_creation
+        end
+      end
+
       class ::Time
         class << self
           alias :real_now :now
@@ -490,10 +495,11 @@ namespace :redmine do
               resolution_change = changeset.select {|change| change.field == 'resolution'}.first
               comment_change = changeset.select {|change| change.field == 'comment'}.first
 
-              n = Journal.new :notes => (comment_change ? convert_wiki_text(encode(comment_change.newvalue)) : ''),
-                              :created_at => time
+              n = IssueJournal.new :notes => (comment_change ? convert_wiki_text(encode(comment_change.newvalue)) : ''),
+                              :created_at => time,
+                              :version => i.version+1
               n.user = find_or_create_user(changeset.first.author)
-              n.journalized = i
+              n.journaled = i
               if status_change &&
                    STATUS_MAPPING[status_change.oldvalue] &&
                    STATUS_MAPPING[status_change.newvalue] &&
@@ -513,7 +519,7 @@ namespace :redmine do
                   ]
                 })
               end
-              n.save unless n.details.empty? && n.notes.blank?
+              n.save unless n.changes.empty? && n.notes.blank?
           end
 
           # Attachments
