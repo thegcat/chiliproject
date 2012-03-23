@@ -165,12 +165,12 @@ namespace :redmine do
         set_inheritance_column :none
 
         # ticket changes: only migrate status changes and comments
-        has_many :changes, :class_name => "TracTicketChange", :foreign_key => :ticket
-        has_many :attachments, :class_name => "TracAttachment",
+        has_many :changes, :class_name => "TracMigrate::TracTicketChange", :foreign_key => :ticket
+        has_many :attachments, :class_name => "TracMigrate::TracAttachment",
                                :finder_sql => "SELECT DISTINCT attachment.* FROM #{TracMigrate::TracAttachment.table_name}" +
                                               " WHERE #{TracMigrate::TracAttachment.table_name}.type = 'ticket'" +
                                               ' AND #{TracMigrate::TracAttachment.table_name}.id = \'#{TracMigrate::TracAttachment.connection.quote_string(id.to_s)}\''
-        has_many :customs, :class_name => "TracTicketCustom", :foreign_key => :ticket
+        has_many :customs, :class_name => "TracMigrate::TracTicketCustom", :foreign_key => :ticket
 
         def ticket_type
           read_attribute(:type)
@@ -206,7 +206,7 @@ namespace :redmine do
         set_table_name :wiki
         set_primary_key :name
 
-        has_many :attachments, :class_name => "TracAttachment",
+        has_many :attachments, :class_name => "TracMigrate::TracAttachment",
                                :finder_sql => "SELECT DISTINCT attachment.* FROM #{TracMigrate::TracAttachment.table_name}" +
                                       " WHERE #{TracMigrate::TracAttachment.table_name}.type = 'wiki'" +
                                       ' AND #{TracMigrate::TracAttachment.table_name}.id = \'#{TracMigrate::TracAttachment.connection.quote_string(id.to_s)}\''
