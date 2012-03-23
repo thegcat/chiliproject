@@ -70,6 +70,7 @@ namespace :redmine do
       class ::Time
         class << self
           alias :real_now :now
+          alias :at_without_high_precision :at
           def now
             real_now - @fake_diff.to_i
           end
@@ -78,6 +79,9 @@ namespace :redmine do
             res = yield
             @fake_diff = 0
            res
+          end
+          def at(time)
+            at_without_high_precision(time > 1e6 ? time/1e6 : time)
           end
         end
       end
