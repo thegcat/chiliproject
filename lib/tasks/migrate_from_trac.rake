@@ -491,23 +491,27 @@ namespace :redmine do
               comment_change = changeset.select {|change| change.field == 'comment'}.first
 
               n = Journal.new :notes => (comment_change ? convert_wiki_text(encode(comment_change.newvalue)) : ''),
-                              :created_on => time
+                              :created_at => time
               n.user = find_or_create_user(changeset.first.author)
               n.journalized = i
               if status_change &&
                    STATUS_MAPPING[status_change.oldvalue] &&
                    STATUS_MAPPING[status_change.newvalue] &&
                    (STATUS_MAPPING[status_change.oldvalue] != STATUS_MAPPING[status_change.newvalue])
-                n.details << JournalDetail.new(:property => 'attr',
-                                               :prop_key => 'status_id',
-                                               :old_value => STATUS_MAPPING[status_change.oldvalue].id,
-                                               :value => STATUS_MAPPING[status_change.newvalue].id)
+                n.changes.merge({
+                  'status_id' => [
+                    STATUS_MAPPING[status_change.oldvalue].id,
+                    STATUS_MAPPING[status_change.newvalue].id
+                  ]
+                })
               end
               if resolution_change
-                n.details << JournalDetail.new(:property => 'cf',
-                                               :prop_key => custom_field_map['resolution'].id,
-                                               :old_value => resolution_change.oldvalue,
-                                               :value => resolution_change.newvalue)
+                n.changes.merge({
+                  custom_field_map['resolution'].id => [
+                    resolution_change.oldvalue,
+                    resolution_change.newvalue
+                  ]
+                })
               end
               n.save unless n.details.empty? && n.notes.blank?
           end
