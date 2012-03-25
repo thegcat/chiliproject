@@ -658,4 +658,6 @@ jQuery(document).ready(function($) {
   }
 
   setUpDialogWindow();
+
+  $('.datepicker').datepicker(datepickerSettings);
 });

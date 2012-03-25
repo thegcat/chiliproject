@@ -945,6 +945,28 @@ module ApplicationHelper
     end
   end
 
+  def jquery_datepicker_settings
+      unless @jquery_datepicker_settings_included
+          @jquery_datepicker_settings_included = true
+          content_for :header_tags do
+              start_of_week = Setting.start_of_week.to_s
+              javascript_tag("var datepickerSettings = {" +
+                             "firstDay: '" + start_of_week + "', " +
+                             "showOn: 'button', " +
+                             "buttonImage: '/images/calendar.png', " +
+                             "buttonImageOnly: true, " +
+                             "showButtonPanel: true, " +
+                             "dateFormat: 'yy-mm-dd' " +
+                             "}") +
+              if current_language.to_s != 'en'
+                  javascript_include_tag("libs/ui/i18n/jquery.ui.datepicker-#{current_language.to_s}.js")
+              else
+                  ''
+              end
+          end
+      end
+  end
+
   def content_for(name, content = nil, &block)
     @has_content ||= {}
     @has_content[name] = true

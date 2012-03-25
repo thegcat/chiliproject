@@ -36,8 +36,8 @@ module CustomFieldsHelper
     field_format = Redmine::CustomFieldFormat.find_by_name(custom_field.field_format)
     case field_format.try(:edit_as)
     when "date"
-      text_field_tag(field_name, custom_value.value, :id => field_id, :size => 10) +
-      calendar_for(field_id)
+      text_field_tag(field_name, custom_value.value, :id => field_id, :size => 10, :class => "datepicker") +
+          jquery_datepicker_settings
     when "text"
       text_area_tag(field_name, custom_value.value, :id => field_id, :rows => 3, :style => 'width:90%')
     when "bool"
@@ -71,8 +71,8 @@ module CustomFieldsHelper
     field_format = Redmine::CustomFieldFormat.find_by_name(custom_field.field_format)
     case field_format.try(:edit_as)
       when "date"
-        text_field_tag(field_name, '', :id => field_id, :size => 10) +
-        calendar_for(field_id)
+        text_field_tag(field_name, '', :id => field_id, :size => 10, :class => "datepicker") +
+            jquery_datepicker_settings
       when "text"
         text_area_tag(field_name, '', :id => field_id, :rows => 3, :style => 'width:90%')
       when "bool"
