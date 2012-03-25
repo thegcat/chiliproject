@@ -658,4 +658,7 @@ jQuery(document).ready(function($) {
   }
 
   setUpDialogWindow();
+
+  $('input[type="date"]').datepicker(datepickerSettings)
+      .filter('[disabled="disabled"]').datepicker('disable');
 });

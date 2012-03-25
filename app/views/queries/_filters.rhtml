@@ -44,8 +44,14 @@ function enableValues(field, indexes) {
 	}
 	if (indexes.length > 0) {
 		Element.show("div_values_" + field);
+    if(jQuery("#div_values_" + field).find('input[type="date"]').size() > 0) {
+      jQuery("#div_values_" + field).find('input[type="date"]').datepicker('enable');
+    }
 	} else {
 		Element.hide("div_values_" + field);
+    if(jQuery("#div_values_" + field).find('input[type="date"]').size() > 0) {
+      jQuery("#div_values_" + field).find('input[type="date"]').datepicker('disable');
+    }
 	}
 }
 
