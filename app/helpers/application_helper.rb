@@ -915,36 +915,6 @@ module ApplicationHelper
     link_to h(name), url, options
   end
 
-  def calendar_for(field_id)
-    include_calendar_headers_tags
-    image_tag("calendar.png", {:id => "#{field_id}_trigger",:class => "calendar-trigger"}) +
-    javascript_tag("Calendar.setup({inputField : '#{field_id}', ifFormat : '%Y-%m-%d', button : '#{field_id}_trigger' });")
-  end
-
-  def include_calendar_headers_tags
-    unless @calendar_headers_tags_included
-      @calendar_headers_tags_included = true
-      content_for :header_tags do
-        start_of_week = case Setting.start_of_week.to_i
-        when 1
-          'Calendar._FD = 1;' # Monday
-        when 7
-          'Calendar._FD = 0;' # Sunday
-        when 6
-          'Calendar._FD = 6;' # Saturday
-        else
-          '' # use language
-        end
-
-        javascript_include_tag('calendar/calendar') +
-        javascript_include_tag("calendar/lang/calendar-#{current_language.to_s.downcase}.js") +
-        javascript_tag(start_of_week) +
-        javascript_include_tag('calendar/calendar-setup') +
-        stylesheet_link_tag('calendar')
-      end
-    end
-  end
-
   def jquery_datepicker_settings
       unless @jquery_datepicker_settings_included
           @jquery_datepicker_settings_included = true
