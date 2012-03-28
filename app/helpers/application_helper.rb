@@ -923,7 +923,7 @@ module ApplicationHelper
               javascript_tag("var datepickerSettings = {" +
                              "firstDay: '" + start_of_week + "', " +
                              "showOn: 'button', " +
-                             "buttonImage: '/images/calendar.png', " +
+                             "buttonImage: '" + path_to_image('/images/calendar.png') + "', " +
                              "buttonImageOnly: true, " +
                              "showButtonPanel: true, " +
                              "dateFormat: 'yy-mm-dd' " +
