@@ -7,7 +7,7 @@ script: "bundle exec rake test:units"
 before_script:
   - mysql -e 'create database chiliproject_test;'
   - cp config/database.yml.example config/database.yml
-  - sed -ie 's/  adapter: mysql/  adapter: mysql2/g' config/database.yml
+  - "sed -ie 's/  adapter: mysql/  adapter: mysql2/g' config/database.yml"
   - "bundle exec rake db:migrate"
 branches:
   only:
