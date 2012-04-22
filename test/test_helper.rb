@@ -69,10 +69,6 @@ class ActiveSupport::TestCase
     ActionController::TestUploadedFile.new(ActiveSupport::TestCase.fixture_path + "/files/#{name}", mime, true)
   end
 
-  def credentials(user, password=nil)
-    {:authorization => ActionController::HttpAuthentication::Basic.encode_credentials(user, password || user)}
-  end
-
   # Mock out a file
   def self.mock_file
     file = 'a_file.png'
@@ -165,33 +161,6 @@ class ActiveSupport::TestCase
     end
   end
 
-  def self.should_show_the_old_and_new_values_for(prop_key, model, &block)
-    context "" do
-      setup do
-        if block_given?
-          instance_eval &block
-        else
-          @old_value = model.generate!
-          @new_value = model.generate!
-        end
-      end
-
-      should "use the new value's name" do
-        @detail = IssueJournal.generate(:version => 1, :journaled => Issue.last)
-        @detail.update_attribute(:changes, {prop_key => [@old_value.id, @new_value.id]})
-
-        assert_match @new_value.class.find(@new_value.id).name, @detail.render_detail(prop_key, true)
-      end
-
-      should "use the old value's name" do
-        @detail = IssueJournal.generate(:version => 1, :journaled => Issue.last)
-        @detail.update_attribute(:changes, {prop_key => [@old_value.id, @new_value.id]})
-
-        assert_match @old_value.class.find(@old_value.id).name, @detail.render_detail(prop_key, true)
-      end
-    end
-  end
-
   # Test that a request allows the three types of API authentication
   #
   # * HTTP Basic with username and password
@@ -226,7 +195,8 @@ class ActiveSupport::TestCase
       context "with a valid HTTP authentication" do
         setup do
           @user = User.generate_with_protected!(:password => 'my_password', :password_confirmation => 'my_password', :admin => true) # Admin so they can access the project
-          send(http_method, url, parameters, credentials(@user.login, 'my_password'))
+          @authorization = ActionController::HttpAuthentication::Basic.encode_credentials(@user.login, 'my_password')
+          send(http_method, url, parameters, {:authorization => @authorization})
         end
 
         should_respond_with success_code
@@ -239,7 +209,8 @@ class ActiveSupport::TestCase
       context "with an invalid HTTP authentication" do
         setup do
           @user = User.generate_with_protected!
-          send(http_method, url, parameters, credentials(@user.login, 'wrong_password'))
+          @authorization = ActionController::HttpAuthentication::Basic.encode_credentials(@user.login, 'wrong_password')
+          send(http_method, url, parameters, {:authorization => @authorization})
         end
 
         should_respond_with failure_code
@@ -251,7 +222,7 @@ class ActiveSupport::TestCase
 
       context "without credentials" do
         setup do
-          send(http_method, url, parameters)
+          send(http_method, url, parameters, {:authorization => ''})
         end
 
         should_respond_with failure_code
@@ -281,7 +252,8 @@ class ActiveSupport::TestCase
         setup do
           @user = User.generate_with_protected!(:admin => true)
           @token = Token.generate!(:user => @user, :action => 'api')
-          send(http_method, url, parameters, credentials(@token.value, 'X'))
+          @authorization = ActionController::HttpAuthentication::Basic.encode_credentials(@token.value, 'X')
+          send(http_method, url, parameters, {:authorization => @authorization})
         end
 
         should_respond_with success_code
@@ -296,7 +268,8 @@ class ActiveSupport::TestCase
         setup do
           @user = User.generate_with_protected!
           @token = Token.generate!(:user => @user, :action => 'feeds')
-          send(http_method, url, parameters, credentials(@token.value, 'X'))
+          @authorization = ActionController::HttpAuthentication::Basic.encode_credentials(@token.value, 'X')
+          send(http_method, url, parameters, {:authorization => @authorization})
         end
 
         should_respond_with failure_code
