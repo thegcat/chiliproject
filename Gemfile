@@ -14,8 +14,7 @@ gem "fastercsv", "~> 1.5.0", :platforms => [:ruby_18, :jruby, :mingw_18]
 gem "tzinfo", "~> 0.3.31" # Fixes #903. Not required for Rails >= 3.2
 
 group :test do
-  # requiring the shoulda gem here breaks in mysterious ways on ruby-1.9.3-p125
-  gem 'shoulda', '~> 2.10.3', :require => false
+  gem 'shoulda', '~> 2.10.3'
   gem 'edavis10-object_daddy', :require => 'object_daddy'
   gem 'mocha'
   gem 'capybara'
