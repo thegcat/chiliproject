@@ -5,10 +5,9 @@ rvm:
 env: RAILS_ENV=test
 script: "bundle exec rake test:units"
 before_script:
-  - mysql -e 'create database chiliproject_test;'
   - cp config/database.yml.example config/database.yml
   - "sed -ie 's/  adapter: mysql/  adapter: mysql2/g' config/database.yml"
-  - "bundle exec rake db:migrate"
+  - "rake db:setup"
   - "sudo apt-get update"
   - "sudo apt-get install git cvs"
   - "rake test:scm:setup:all"
