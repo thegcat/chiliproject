@@ -9,6 +9,8 @@ before_script:
   - cp config/database.yml.example config/database.yml
   - "sed -ie 's/  adapter: mysql/  adapter: mysql2/g' config/database.yml"
   - "bundle exec rake db:migrate"
+  - "apt install git cvs"
+  - "rake test:scm:setup:all"
 branches:
   only:
     - master
