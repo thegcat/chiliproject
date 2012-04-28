@@ -9,7 +9,7 @@ before_script:
   - "sed -ie 's/  adapter: mysql/  adapter: mysql2/g' config/database.yml"
   - "rake db:setup"
   - "sudo apt-get update"
-  - "sudo apt-get install git cvs"
+  - "sudo apt-get install bzr cvs darcs git subversion"
   - "rake test:scm:setup:all"
 branches:
   only:
