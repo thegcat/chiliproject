@@ -115,7 +115,7 @@ ActionController::Routing::Routes.draw do |map|
     issues.resources :time_entries, :controller => 'timelog'
   end
 
-  map.resources :issues, :path_prefix => '/projects/:project_id', :collection => { :create => :post } do |issues|
+  map.resources :issues, :path_prefix => '/projects/:project_id' do |issues|
     issues.resources :time_entries, :controller => 'timelog'
   end
 
