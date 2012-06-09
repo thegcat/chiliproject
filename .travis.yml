@@ -27,6 +27,6 @@ branches:
     - unstable
     - master
     - stable
+    - rbx-fixes
 notifications:
   email: false
-  irc: "irc.freenode.org#chiliproject"
