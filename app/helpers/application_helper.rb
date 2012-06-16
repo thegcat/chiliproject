@@ -916,6 +916,7 @@ module ApplicationHelper
   end
 
   def jquery_datepicker_settings
+      script = ''
       unless @jquery_datepicker_settings_included
           @jquery_datepicker_settings_included = true
           content_for :header_tags do
@@ -931,9 +932,9 @@ module ApplicationHelper
               unless current_language.to_s == "en"
                   script << javascript_include_tag("libs/ui/i18n/jquery.ui.datepicker-#{current_language.to_s}.js")
               end
-              script
           end
       end
+      script
   end
 
   def content_for(name, content = nil, &block)
