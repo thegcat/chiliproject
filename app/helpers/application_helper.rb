@@ -928,10 +928,8 @@ module ApplicationHelper
                    "buttonImageOnly: true, " +
                    "showButtonPanel: true, " +
                    "dateFormat: 'yy-mm-dd' " +
-                   "}")
-    unless current_language.to_s == "en"
-      script << javascript_include_tag("libs/ui/i18n/jquery.ui.datepicker-#{current_language.to_s}.js")
-    end
+                   "};" +
+                   "jQuery(function($){$.datepicker.setDefaults($.datepicker.regional['#{current_language.to_s}']); })")
     script
   end
 
