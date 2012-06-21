@@ -915,6 +915,10 @@ module ApplicationHelper
     link_to h(name), url, options
   end
 
+  def calendar_for(field_id)
+    javascript_tag("jQuery('##{field_id}').datepicker(datepickerSettings)")
+  end
+
   def jquery_datepicker_settings
     start_of_week = Setting.start_of_week.to_s
     script = javascript_tag("var datepickerSettings = {" +
