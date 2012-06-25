@@ -923,7 +923,7 @@ module ApplicationHelper
     start_of_week = Setting.start_of_week.to_s
     script = javascript_tag("var datepickerSettings = {" +
                    "firstDay: '" + start_of_week + "', " +
-                   "showOn: 'button', " +
+                   "showOn: 'both', " +
                    "buttonImage: '" + path_to_image('/images/calendar.png') + "', " +
                    "buttonImageOnly: true, " +
                    "showButtonPanel: true, " +
