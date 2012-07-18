@@ -12,9 +12,7 @@
 # See doc/COPYRIGHT.rdoc for more details.
 #++
 
-require 'rubygems'
+# This file is used by Rack-based servers to start the application.
 
-# Set up gems listed in the Gemfile.
-ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../../Gemfile', __FILE__)
-
-require 'bundler/setup' if File.exists?(ENV['BUNDLE_GEMFILE'])
+require ::File.expand_path('../config/environment',  __FILE__)
+run ChiliProject::Application
