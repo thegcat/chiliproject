@@ -35,6 +35,11 @@ group :test do
   gem 'edavis10-object_daddy', :require => 'object_daddy'
   gem 'mocha'
   gem 'capybara'
+
+  gem 'minitest'
+  gem 'turn'
+  gem 'minitest-matchers'
+  gem 'valid_attribute'
 end
 
 group :ldap do
