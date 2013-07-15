@@ -37,6 +37,7 @@ group :test do
   gem 'test-unit', :platforms => [:mri_19]
   gem 'mocha'
   gem 'capybara'
+  gem 'edavis10-object_daddy', :require => 'object_daddy'
   gem 'coveralls', :require => false
 
   gem 'minitest'
