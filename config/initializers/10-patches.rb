@@ -139,16 +139,6 @@ end
 
 ActionMailer::Base.send :include, AsynchronousMailer
 
-# TMail::Unquoter.convert_to_with_fallback_on_iso_8859_1 introduced in TMail 1.2.7
-# triggers a test failure in test_add_issue_with_japanese_keywords(MailHandlerTest)
-module TMail
-  class Unquoter
-    class << self
-      alias_method :convert_to, :convert_to_without_fallback_on_iso_8859_1
-    end
-  end
-end
-
 module ActionController
   module MimeResponds
     class Responder
@@ -156,13 +146,6 @@ module ActionController
         any(:xml, :json, &block)
       end
     end
-  end
-end
-
-require 'action_view/helpers/tag_helper'
-module ActionView::Helpers::TagHelper
-  def escape_once(html)
-    ActiveSupport::Multibyte.clean(html.to_s).gsub(/[\"\'><]|&(?!([a-zA-Z]+|(#\d+));)/) { |special| ERB::Util::HTML_ESCAPE[special] }
   end
 end
 
