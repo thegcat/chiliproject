@@ -42,7 +42,7 @@ namespace :test do
     namespace :setup do
       desc "Creates directory for test repositories"
       task :create_dir do
-        FileUtils.mkdir_p Rails.root + '/tmp/test'
+        FileUtils.mkdir_p(Rails.root.join('tmp', 'test'))
       end
 
       supported_scms = [:subversion, :cvs, :bazaar, :mercurial, :git, :darcs, :filesystem]

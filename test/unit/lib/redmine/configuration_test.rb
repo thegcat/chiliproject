@@ -50,7 +50,7 @@ class Redmine::ConfigurationTest < ActiveSupport::TestCase
 
   def load_conf(file, env)
     @conf.load(
-      :file => File.join(Rails.root, 'test', 'fixtures', 'configuration', file),
+      :file => Rails.root.join('test', 'fixtures', 'configuration', file),
       :env => env
     )
   end

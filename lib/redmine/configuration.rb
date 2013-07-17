@@ -32,7 +32,7 @@ module Redmine
       # * <tt>:file</tt>: the configuration file to load (default: config/configuration.yml)
       # * <tt>:env</tt>: the environment to load the configuration for (default: Rails.env)
       def load(options={})
-        filename = options[:file] || File.join(Rails.root, 'config', 'configuration.yml')
+        filename = options[:file] || Rails.root.join('config', 'configuration.yml')
         env = options[:env] || Rails.env
 
         @config = @defaults.dup
@@ -97,7 +97,7 @@ module Redmine
       end
 
       def load_deprecated_email_configuration(env)
-        deprecated_email_conf = File.join(Rails.root, 'config', 'email.yml')
+        deprecated_email_conf = Rails.root.join('config', 'email.yml')
         if File.file?(deprecated_email_conf)
           warn "Storing outgoing emails configuration in config/email.yml is deprecated. You should now store it in config/configuration.yml using the email_delivery setting."
           @config.merge!({'email_delivery' => load_from_yaml(deprecated_email_conf, env)})

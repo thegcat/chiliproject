@@ -195,7 +195,7 @@ module Redmine
           logger.debug "Shelling out: #{strip_credential(cmd)}" if logger && logger.debug?
           if Rails.env == 'development'
             # Capture stderr when running in dev environment
-            cmd = "#{cmd} 2>>#{RAILS_ROOT}/log/scm.stderr.log"
+            cmd = "#{cmd} 2>>#{shell_quote Rails.root.join('log', 'scm.stderr.log').to_s}"
           end
           begin
             if RUBY_VERSION < '1.9'
